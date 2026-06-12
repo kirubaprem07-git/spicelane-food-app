@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpiceLane — Authentic Flavours</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="logo">🌶️ <span>SpiceLane</span></div>
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Cart <span id="cartCount">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <p class="tagline">🔥 Fresh · Fast · Flavourful</p>
+      <h1>Authentic Indian<br/><span>Flavours Delivered</span></h1>
+      <p class="subtitle">From sizzling biryanis to golden dosas — delivered to your door!</p>
+      <a href="#menu" class="btn-primary">Explore Menu 🍽️</a>
+    </div>
+    <div class="hero-emoji">🍛</div>
+  </section>
+
+  <section id="menu" class="menu-section">
+    <div class="section-header">
+      <h2>What Would You Like Today?</h2>
+      <p>Every dish prepared fresh and delivered with love.</p>
+    </div>
+    <div class="category-filter">
+      {% for cat in categories %}
+      <button class="cat-btn {% if loop.first %}active{% endif %}"
+              onclick="filterMenu('{{ cat }}', this)">{{ cat }}</button>
+      {% endfor %}
+    </div>
+    <div class="menu-grid" id="menuGrid">
+      {% for item in menu %}
+      <div class="food-card" data-category="{{ item.category }}">
+        <div class="card-emoji-wrap">
+          <div class="card-emoji">{{ item.emoji }}</div>
+          <span class="card-badge">{{ item.category }}</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ item.name }}</h3>
+          <div class="card-meta">
+            <span>⭐ {{ item.rating }}</span>
+            <span>🕐 {{ item.time }}</span>
+          </div>
+          <p class="card-desc">{{ item.desc }}</p>
+          <div class="card-footer">
+            <span class="price">₹{{ item.price }}</span>
+            <button class="add-btn" onclick="addToCart({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.emoji }}')">+ Add</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>🛒 Your Order</h2>
+      <button onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div id="cartEmpty" style="text-align:center; padding:2rem;">
+        <p>🍽️ Cart is empty!</p>
+      </div>
+    </div>
+    <div id="cartFooter" style="display:none; padding:1rem;">
+      <div class="cart-total">
+        <span>Subtotal</span><span id="cartSubtotal">₹0</span>
+      </div>
+      <div class="cart-total">
+        <span>Delivery</span><span>₹30</span>
+      </div>
+      <div class="cart-total grand">
+        <span>Total</span><span id="cartTotal">₹0</span>
+      </div>
+      <button class="checkout-btn" onclick="openCheckout()">Proceed to Order →</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeCheckout()">✕</button>
+      <h2>📦 Delivery Details</h2>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="custName" placeholder="Your name"/>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="custPhone" placeholder="10-digit number"/>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <textarea id="custAddress" placeholder="Your delivery address..."></textarea>
+      </div>
+      <button class="place-order-btn" onclick="placeOrder()">🚀 Place Order</button>
+    </div>
+  </div>
+
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-modal">
+      <div>🎉</div>
+      <h2>Order Placed!</h2>
+      <p id="successMsg">Your food is being prepared!</p>
+      <p>Order ID: <strong id="orderId"></strong></p>
+      <p>Estimated Time: <strong>30–45 minutes</strong></p>
+      <button onclick="closeSuccess()">Back to Menu 🍽️</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>🌶️ SpiceLane — Crafted with ❤️ in Tamil Nadu © 2025</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
